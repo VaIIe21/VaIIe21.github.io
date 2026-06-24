@@ -77,7 +77,6 @@
             pointer-events: none;
         }
 
-        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content {
             background: linear-gradient(145deg, #1a0033, #2a0055);
@@ -103,12 +102,6 @@
         .option:hover { background: rgba(155, 89, 182, 0.3); transform: scale(1.03); }
         .option.selected { border-color: #ffd700; background: rgba(255, 215, 0, 0.15); }
         .option.correct { background: #00cc00; border-color: #00ff00; }
-        .option.wrong { background: #cc0000; border-color: #ff4444; }
-
-        .btn { padding: 12px 25px; margin: 8px 5px; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1rem; font-weight: bold; }
-        .btn-confirm { background: #00cc00; color: white; }
-        .btn-cancel { background: #555; color: white; }
-        .btn-new { background: #6c3483; color: white; }
     </style>
 </head>
 <body>
@@ -147,11 +140,16 @@
 
         const columns = [
             {
-                easy: [
-                    { q: "¿Cuál es la estrella más cercana al Sol?", a: ["A) Sirio", "B) Alfa Centauri", "C) Betelgeuse", "D) Proxima Centauri"], c: 3 }
-                ],
+                easy: [],
                 medium: [],
-                hard: []
+                hard: [
+                    { 
+                        q: "¿Quieres mucho a tu equipo Nosotros?", 
+                        a: ["A) Sí, muchísimo", "B) Obvio que sí", "C) Con todo mi corazón", "D) Más que a nada"], 
+                        c: 0, 
+                        allCorrect: true   // ← Esta es la pregunta especial
+                    }
+                ]
             },
             { easy: [], medium: [], hard: [] },
             { easy: [], medium: [], hard: [] }
@@ -161,13 +159,11 @@
         let currentLevel = '';
         let currentPoints = 0;
         let selectedAnswer = -1;
-        let correctAnswer = -1;
         let currentCardId = null;
         let currentCardElement = null;
 
         const grid = document.getElementById('grid');
 
-        // Crear tarjetas
         for (let row = 0; row < 6; row++) {
             for (let col = 0; col < 3; col++) {
                 const card = document.createElement('div');
@@ -227,7 +223,7 @@
                 const option = document.createElement('div');
                 option.className = 'option';
                 option.textContent = answer;
-                option.onclick = () => selectAnswer(idx, option, q.c);
+                option.onclick = () => selectAnswer(idx, option, q);
                 optionsDiv.appendChild(option);
             });
             
@@ -235,11 +231,10 @@
             document.getElementById('modal').style.display = 'flex';
         }
 
-        function selectAnswer(index, element, correct) {
+        function selectAnswer(index, element, question) {
             document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
             element.classList.add('selected');
             selectedAnswer = index;
-            correctAnswer = correct;
             document.getElementById('confirmation-buttons').style.display = 'block';
         }
 
@@ -247,15 +242,18 @@
             if (selectedAnswer === -1) return;
 
             const allOptions = document.querySelectorAll('.option');
-            let isCorrect = selectedAnswer === correctAnswer;
+            const currentQuestion = currentQuestions.find(q => q.q === document.getElementById('question').textContent);
+            const isAllCorrect = currentQuestion && currentQuestion.allCorrect;
 
             allOptions.forEach((opt, i) => {
                 opt.style.pointerEvents = 'none';
-                if (i === correctAnswer) opt.classList.add('correct');
-                else if (i === selectedAnswer) opt.classList.add('wrong');
+                if (isAllCorrect || i === selectedAnswer) {
+                    opt.classList.add('correct');
+                }
             });
 
-            if (isCorrect && currentCardElement) {
+            // Siempre suma puntos si es la pregunta especial
+            if (currentCardElement) {
                 totalScore += currentPoints;
                 document.getElementById('totalScore').textContent = totalScore.toLocaleString();
                 answered.add(currentCardId);
