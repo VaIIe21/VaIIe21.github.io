@@ -158,7 +158,6 @@
     <div class="container">
         <h1>CONCURSILLO</h1>
         <div class="score">Puntuación Total: <span id="totalScore">0</span> 💲</div>
-        <p>Elige tu zona y nivel de dificultad</p>
         <div class="grid" id="grid"></div>
     </div>
 
@@ -198,18 +197,44 @@
                 ],
                 medium: [
                     { q: "¿Qué nombre le pondría a cualquier mascota?", a: ["A) Oliver", "B) Frank Jr", "C) Frank Segundo", "D) Alfred"], c: 3 }
+                    {q:"Que película NO hemos visto en el cine ",a:["A)Sillent Hills ","B)Fnaf 1","C)Interestelar","D)VHS"],c:1}
+                    {q:"Cuantas veces hemos salido con el Hein y la Kamy  ",a["A)1","B)2","C)3","D)4"],c:1}
                 ],
                 hard: [
                     { 
-                        q: "¿Quieres mucho a tu equipo Nosotros?", 
-                        a: ["A) Sí, muchísimo", "B) Obvio que sí", "C) Con todo mi corazón", "D) Más que a nada"], 
+                        q: "Que regalo que te eh echo es el que más te ha gustado  ", 
+                        a: ["A) Ipad", "B)Concierto BTR", "C)Lampara Flor", "D)Libros"], 
                         c: 0, 
                         allCorrect: true 
                     }
                 ]
             },
-            { easy: [], medium: [], hard: [] },
-            { easy: [], medium: [], hard: [] }
+            { easy: [
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:}
+
+                
+            ], medium: [
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:}
+            ], hard: [
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:}
+            ] },
+            { easy: [
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:}
+            ], medium: [
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:}
+            ], hard: [
+                {q:"",a:["A)","B)","C)","D)"],c:},
+                {q:"",a:["A)","B)","C)","D)"],c:}
+            ] }
         ];
 
         let currentQuestions = [];
