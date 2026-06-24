@@ -1,19 +1,12 @@
-✅ ¡Perfecto! Te voy a dar un diseño bonito con fondo galáctico y una cuadrícula de 3 columnas × 6 filas (18 casillas clicables).
-Código completo para index.html
-Copia todo esto y pégalo en tu archivo index.html:
-HTML<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Espacio Galáctico</title>
+    <title>Galactic Quiz</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Arial', sans-serif;
             height: 100vh;
@@ -23,29 +16,22 @@ HTML<!DOCTYPE html>
             position: relative;
         }
 
-        /* Fondo galáctico con estrellas */
+        /* Fondo galáctico */
         body::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 2%),
-                radial-gradient(circle at 50% 70%, rgba(255,255,255,0.12) 0%, transparent 2%),
-                radial-gradient(circle at 80% 40%, rgba(255,255,255,0.18) 0%, transparent 2%),
-                radial-gradient(circle at 30% 80%, rgba(255,255,255,0.1) 0%, transparent 2%);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 2%),
+                        radial-gradient(circle at 50% 70%, rgba(255,255,255,0.12) 0%, transparent 2%),
+                        radial-gradient(circle at 80% 40%, rgba(255,255,255,0.18) 0%, transparent 2%);
             background-size: 300px 300px;
             animation: stars 50s linear infinite;
             pointer-events: none;
             z-index: 1;
         }
 
-        @keyframes stars {
-            0% { background-position: 0 0; }
-            100% { background-position: -300px -300px; }
-        }
+        @keyframes stars { 0% { background-position: 0 0; } 100% { background-position: -300px -300px; } }
 
         .container {
             position: relative;
@@ -62,18 +48,12 @@ HTML<!DOCTYPE html>
             text-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
         }
 
-        p {
-            font-size: 1.3rem;
-            margin-bottom: 40px;
-            opacity: 0.9;
-        }
-
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             max-width: 1100px;
-            margin: 0 auto;
+            margin: 40px auto;
         }
 
         .card {
@@ -99,67 +79,176 @@ HTML<!DOCTYPE html>
             box-shadow: 0 0 30px rgba(155, 89, 182, 0.6);
         }
 
-        .card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 8px;
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
-        .card p {
-            font-size: 1rem;
-            opacity: 0.85;
+        .modal-content {
+            background: linear-gradient(145deg, #1a0033, #2a0055);
+            border: 3px solid #9b59b6;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 700px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(155, 89, 182, 0.8);
         }
 
-        /* Efecto de brillo */
-        .card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 40px;
-            height: 200%;
-            background: linear-gradient(transparent, rgba(255,255,255,0.4), transparent);
-            transform: rotate(30deg);
-            opacity: 0;
-            transition: 0.6s;
+        .modal h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
         }
 
-        .card:hover::after {
-            opacity: 1;
-            left: 120%;
+        .option {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #9b59b6;
+            margin: 12px 0;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            background: rgba(155, 89, 182, 0.3);
+            transform: scale(1.03);
+        }
+
+        .option.correct { background: #00cc00; border-color: #00ff00; }
+        .option.wrong { background: #cc0000; border-color: #ff4444; }
+
+        .close {
+            float: right;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🌌 GALACTIC HUB</h1>
-        <p>Explora las 18 zonas del universo</p>
+        <h1>🌌 GALACTIC QUIZ</h1>
+        <p>Elige una zona y responde correctamente</p>
         
-        <div class="grid" id="grid">
-            <!-- Las 18 casillas se generan con JavaScript -->
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">×</span>
+            <h2 id="question"></h2>
+            <div id="options"></div>
+            <button onclick="closeModal()">Cerrar</button>
         </div>
     </div>
 
     <script>
+        // Preguntas de ejemplo (puedes agregar más)
+        const questions = [
+            {
+                question: "¿Cuál es la estrella más cercana al Sol?",
+                answers: ["A) Sirio", "B) Alfa Centauri", "C) Betelgeuse", "D) Proxima Centauri"],
+                correct: 3
+            },
+            {
+                question: "¿Cuántos planetas hay en el Sistema Solar?",
+                answers: ["A) 7", "B) 8", "C) 9", "D) 10"],
+                correct: 1
+            },
+            {
+                question: "¿Qué planeta es conocido como el 'Planeta Rojo'?",
+                answers: ["A) Venus", "B) Marte", "C) Júpiter", "D) Saturno"],
+                correct: 1
+            },
+            {
+                question: "¿Cuál es la galaxia más cercana a la Vía Láctea?",
+                answers: ["A) Andrómeda", "B) Triángulo", "C) Sombrero", "D) Remolino"],
+                correct: 0
+            }
+            // Agrega más preguntas aquí
+        ];
+
         const grid = document.getElementById('grid');
-        
+        let currentQuestionIndex = 0;
+
+        // Crear las 18 casillas
         for (let i = 1; i <= 18; i++) {
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <div>
                     <h3>Zona ${i}</h3>
-                    <p>Casilla ${i} • Click para explorar</p>
+                    <p>Explorar</p>
                 </div>
             `;
             
-            // Hacerlas clicables
             card.addEventListener('click', () => {
-                alert(`¡Has entrado en la Zona ${i} del universo! ✨`);
-                // Aquí puedes cambiar el alert por una ventana modal o redirección
+                currentQuestionIndex = (i - 1) % questions.length; // Cicla entre las preguntas
+                showQuestion(currentQuestionIndex);
             });
             
             grid.appendChild(card);
         }
+
+        function showQuestion(index) {
+            const q = questions[index];
+            document.getElementById('question').textContent = q.question;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.answers.forEach((answer, idx) => {
+                const option = document.createElement('div');
+                option.className = 'option';
+                option.textContent = answer;
+                option.onclick = () => checkAnswer(idx, q.correct, option);
+                optionsDiv.appendChild(option);
+            });
+            
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function checkAnswer(selected, correct, element) {
+            const allOptions = document.querySelectorAll('.option');
+            allOptions.forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === correct) {
+                    opt.classList.add('correct');
+                } else if (i === selected) {
+                    opt.classList.add('wrong');
+                }
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Cerrar modal con tecla Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") closeModal();
+        });
     </script>
 </body>
 </html>
