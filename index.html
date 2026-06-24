@@ -6,7 +6,7 @@
     <title>CONCURSILLO</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+       
         body {
             font-family: 'Arial', sans-serif;
             min-height: 100vh;
@@ -15,7 +15,6 @@
             overflow-y: auto;
             position: relative;
         }
-
         body::before {
             content: '';
             position: fixed;
@@ -29,14 +28,10 @@
             pointer-events: none;
             z-index: 1;
         }
-
         @keyframes stars { 0% { background-position: 0 0; } 100% { background-position: -300px -300px; } }
-
         .container { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 30px 20px 100px; text-align: center; }
         h1 { font-size: 3.2rem; margin-bottom: 5px; text-shadow: 0 0 20px rgba(138, 43, 226, 0.8); }
-
         .score { font-size: 1.8rem; color: #ffd700; margin-bottom: 20px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
-
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -44,7 +39,6 @@
             max-width: 1100px;
             margin: 30px auto;
         }
-
         .card {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(10px);
@@ -60,9 +54,7 @@
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
-
         .card:hover { transform: translateY(-10px) scale(1.05); background: rgba(138, 43, 226, 0.25); }
-
         .header-card {
             background: rgba(155, 89, 182, 0.3);
             border: 2px solid #ffd700;
@@ -70,21 +62,18 @@
             font-size: 1.35rem;
             font-weight: bold;
         }
-
         .money {
             font-size: 2.8rem;
             font-weight: bold;
             color: #ffd700;
             text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
         }
-
-        .completed { 
-            background: rgba(0, 200, 0, 0.25) !important; 
-            border-color: #00ff00 !important; 
+        .completed {
+            background: rgba(0, 200, 0, 0.25) !important;
+            border-color: #00ff00 !important;
             pointer-events: none;
         }
-
-        /* Modal Mejorado */
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content {
             background: linear-gradient(145deg, #2a0055, #1a0033);
@@ -94,7 +83,6 @@
             box-shadow: 0 0 50px rgba(155, 89, 182, 0.7);
             position: relative;
         }
-
         .close {
             position: absolute;
             top: 15px;
@@ -103,21 +91,8 @@
             cursor: pointer;
             color: #aaa;
         }
-
-        .modal h2 { 
-            color: #ffd700; 
-            margin-bottom: 8px; 
-            font-size: 1.9rem; 
-            text-align: center;
-        }
-
-        .difficulty { 
-            font-size: 1.2rem; 
-            margin-bottom: 25px; 
-            color: #ddd; 
-            text-align: center;
-        }
-
+        .modal h2 { color: #ffd700; margin-bottom: 8px; font-size: 1.9rem; text-align: center; }
+        .difficulty { font-size: 1.2rem; margin-bottom: 25px; color: #ddd; text-align: center; }
         .option {
             background: rgba(255,255,255,0.1);
             border: 2px solid #9b59b6;
@@ -131,7 +106,6 @@
         .option:hover { background: rgba(155, 89, 182, 0.3); transform: scale(1.03); }
         .option.selected { border-color: #ffd700; background: rgba(255, 215, 0, 0.15); }
         .option.correct { background: #00cc00; border-color: #00ff00; }
-
         .btn-container {
             display: flex;
             justify-content: center;
@@ -139,13 +113,12 @@
             margin-top: 30px;
             flex-wrap: wrap;
         }
-
-        .btn { 
-            padding: 14px 28px; 
-            border: none; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-size: 1.1rem; 
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
             font-weight: bold;
             min-width: 160px;
         }
@@ -168,12 +141,11 @@
             <h2 id="question"></h2>
             <p id="difficulty" class="difficulty"></p>
             <div id="options"></div>
-            
+           
             <div class="btn-container" id="confirmation-buttons" style="display: none;">
                 <button class="btn btn-confirm" onclick="submitAnswer()">Confirmar Respuesta</button>
                 <button class="btn btn-cancel" onclick="cancelSelection()">Cancelar</button>
             </div>
-
             <div class="btn-container">
                 <button class="btn btn-new" onclick="newRandomQuestion()">Nueva Pregunta</button>
                 <button class="btn btn-cancel" onclick="closeModal()">Cerrar</button>
@@ -182,7 +154,6 @@
     </div>
 
     <script>
-        // (El resto del código JavaScript es el mismo que te di antes)
         let totalScore = 0;
         const answered = new Set();
 
@@ -196,45 +167,21 @@
                     { q: "A qué concierto fuimos juntos", a: ["A) Bad Bunny", "B) Taylor Swift", "C) Big Time Rush", "D) Pailita"], c: 2 }
                 ],
                 medium: [
-                    { q: "¿Qué nombre le pondría a cualquier mascota?", a: ["A) Oliver", "B) Frank Jr", "C) Frank Segundo", "D) Alfred"], c: 3 }
-                    {q:"Que película NO hemos visto en el cine ",a:["A)Sillent Hills ","B)Fnaf 1","C)Interestelar","D)VHS"],c:1}
-                    {q:"Cuantas veces hemos salido con el Hein y la Kamy  ",a["A)1","B)2","C)3","D)4"],c:1}
+                    { q: "¿Qué nombre le pondría a cualquier mascota?", a: ["A) Oliver", "B) Frank Jr", "C) Frank Segundo", "D) Alfred"], c: 3 },
+                    { q: "Que película NO hemos visto en el cine", a: ["A) Silent Hills", "B) Fnaf 1", "C) Interestelar", "D) VHS"], c: 1 },
+                    { q: "Cuantas veces hemos salido con el Hein y la Kamy", a: ["A) 1", "B) 2", "C) 3", "D) 4"], c: 1 }
                 ],
                 hard: [
                     { 
-                        q: "Que regalo que te eh echo es el que más te ha gustado  ", 
-                        a: ["A) Ipad", "B)Concierto BTR", "C)Lampara Flor", "D)Libros"], 
+                        q: "Que regalo que te eh echo es el que más te ha gustado", 
+                        a: ["A) Ipad", "B) Concierto BTR", "C) Lampara Flor", "D) Libros"], 
                         c: 0, 
                         allCorrect: true 
                     }
                 ]
             },
-            { easy: [
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:}
-
-                
-            ], medium: [
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:}
-            ], hard: [
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:}
-            ] },
-            { easy: [
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:}
-            ], medium: [
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:}
-            ], hard: [
-                {q:"",a:["A)","B)","C)","D)"],c:},
-                {q:"",a:["A)","B)","C)","D)"],c:}
-            ] }
+            { easy: [], medium: [], hard: [] },
+            { easy: [], medium: [], hard: [] }
         ];
 
         let currentQuestions = [];
@@ -284,13 +231,12 @@
                 alert("No hay preguntas en este nivel todavía.");
                 return;
             }
-
             const randomIndex = Math.floor(Math.random() * currentQuestions.length);
             const q = currentQuestions[randomIndex];
-            
+           
             document.getElementById('question').textContent = q.q;
             document.getElementById('difficulty').textContent = `Nivel: ${currentLevel} — ${currentPoints} 💲`;
-            
+           
             const optionsDiv = document.getElementById('options');
             optionsDiv.innerHTML = '';
             selectedAnswer = -1;
@@ -302,7 +248,7 @@
                 option.onclick = () => selectAnswer(idx, option, q);
                 optionsDiv.appendChild(option);
             });
-            
+           
             document.getElementById('confirmation-buttons').style.display = 'none';
             document.getElementById('modal').style.display = 'flex';
         }
