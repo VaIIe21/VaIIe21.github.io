@@ -1,13 +1,4 @@
-✅ Sí, claro! El confirm() de JavaScript es feo y básico. Vamos a reemplazarlo por un sistema mucho más bonito dentro del mismo modal.
-Cambios realizados:
-
-Al hacer clic en una respuesta, se selecciona y aparecen botones "Confirmar" y "Cancelar".
-Todo queda dentro del modal (sin pop-ups molestos).
-Mejor experiencia visual.
-
-
-Código Actualizado (Reemplaza todo tu index.html):
-HTML<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -152,9 +143,9 @@ HTML<!DOCTYPE html>
 </head>
 <body>
     <div class="container">
-        <h1>🌌 GALACTIC QUIZ</h1>
+        <h1>CONCUSILLO</h1>
         <div class="score">Puntuación Total: <span id="totalScore">0</span> pts</div>
-        <p>Elige tu zona y nivel de dificultad</p>
+
         <div class="grid" id="grid"></div>
     </div>
 
@@ -188,7 +179,11 @@ HTML<!DOCTYPE html>
         const columns = [
             // Columna 1
             {
-                easy: [ /* tus preguntas fáciles */ ],
+                easy: [ {
+                        q: "Aquí va la pregunta completa?",
+                        a: ["A) Primera opción", "B) Segunda opción", "C) Tercera opción", "D) Cuarta opción"],
+                        c: 2   // Número de la respuesta correcta (0 = A, 1 = B, 2 = C, 3 = D)
+                        } ],
                 medium: [ /* tus preguntas medias */ ],
                 hard: [ /* tus preguntas difíciles */ ]
             },
