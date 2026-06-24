@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galactic Quiz</title>
+    <title>CONCURSILLO</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -32,23 +32,10 @@
 
         @keyframes stars { 0% { background-position: 0 0; } 100% { background-position: -300px -300px; } }
 
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px 100px;
-            text-align: center;
-        }
+        .container { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 30px 20px 100px; text-align: center; }
+        h1 { font-size: 3.2rem; margin-bottom: 5px; text-shadow: 0 0 20px rgba(138, 43, 226, 0.8); }
 
-        h1 { font-size: 3rem; margin-bottom: 5px; text-shadow: 0 0 20px rgba(138, 43, 226, 0.8); }
-
-        .score {
-            font-size: 1.8rem;
-            color: #ffd700;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-        }
+        .score { font-size: 1.8rem; color: #ffd700; margin-bottom: 20px; text-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
 
         .grid {
             display: grid;
@@ -80,31 +67,23 @@
             background: rgba(155, 89, 182, 0.3);
             border: 2px solid #ffd700;
             cursor: default;
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             font-weight: bold;
         }
 
-        .completed { background: rgba(0, 200, 0, 0.2); border-color: #00ff00; pointer-events: none; }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+        .completed { 
+            background: rgba(0, 200, 0, 0.25) !important; 
+            border-color: #00ff00 !important; 
+            pointer-events: none;
         }
 
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content {
             background: linear-gradient(145deg, #1a0033, #2a0055);
             border: 3px solid #9b59b6;
             border-radius: 20px;
-            width: 90%;
-            max-width: 700px;
-            padding: 30px;
+            width: 90%; max-width: 700px; padding: 30px;
             box-shadow: 0 0 40px rgba(155, 89, 182, 0.8);
         }
 
@@ -126,16 +105,7 @@
         .option.correct { background: #00cc00; border-color: #00ff00; }
         .option.wrong { background: #cc0000; border-color: #ff4444; }
 
-        .close { float: right; font-size: 2.5rem; cursor: pointer; color: #aaa; }
-        .btn { 
-            padding: 12px 25px; 
-            margin: 8px 5px; 
-            border: none; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            font-size: 1.1rem; 
-            font-weight: bold;
-        }
+        .btn { padding: 12px 25px; margin: 8px 5px; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1rem; font-weight: bold; }
         .btn-confirm { background: #00cc00; color: white; }
         .btn-cancel { background: #555; color: white; }
         .btn-new { background: #6c3483; color: white; }
@@ -143,9 +113,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>CONCUSILLO</h1>
-        <div class="score">Puntuación Total: <span id="totalScore">0</span> pts</div>
-
+        <h1>CONCURSILLO</h1>
+        <div class="score">Puntuación Total: <span id="totalScore">0</span> 💲</div>
+        <p>Elige tu zona y nivel de dificultad</p>
         <div class="grid" id="grid"></div>
     </div>
 
@@ -157,7 +127,6 @@
             <p id="difficulty" class="difficulty"></p>
             <div id="options"></div>
             
-            <!-- Botones de confirmación -->
             <div id="confirmation-buttons" style="display: none; margin-top: 25px;">
                 <button class="btn btn-confirm" onclick="submitAnswer()">Confirmar Respuesta</button>
                 <button class="btn btn-cancel" onclick="cancelSelection()">Cancelar</button>
@@ -174,20 +143,16 @@
         let totalScore = 0;
         const answered = new Set();
 
-        const categories = ["ASTRONOMÍA", "PLANETAS", "COSMOS"];
+        const categories = ["❤️Nosotros❤️", "🧁Arcane🧁", "🏳️‍🌈Heartsopped🏳️‍🌈"];
 
         const columns = [
-            // Columna 1
             {
-                easy: [ {
-                        q: "Aquí va la pregunta completa?",
-                        a: ["A) Primera opción", "B) Segunda opción", "C) Tercera opción", "D) Cuarta opción"],
-                        c: 2   // Número de la respuesta correcta (0 = A, 1 = B, 2 = C, 3 = D)
-                        } ],
-                medium: [ /* tus preguntas medias */ ],
-                hard: [ /* tus preguntas difíciles */ ]
+                easy: [
+                    { q: "¿Cuál es la estrella más cercana al Sol?", a: ["A) Sirio", "B) Alfa Centauri", "C) Betelgeuse", "D) Proxima Centauri"], c: 3 }
+                ],
+                medium: [],
+                hard: []
             },
-            // Columna 2 y 3 (vacías por ahora)
             { easy: [], medium: [], hard: [] },
             { easy: [], medium: [], hard: [] }
         ];
@@ -197,11 +162,12 @@
         let currentPoints = 0;
         let selectedAnswer = -1;
         let correctAnswer = -1;
-        let currentCardId = '';
+        let currentCardId = null;
+        let currentCardElement = null;
 
         const grid = document.getElementById('grid');
 
-        // Crear tarjetas (mismo código anterior)
+        // Crear tarjetas
         for (let row = 0; row < 6; row++) {
             for (let col = 0; col < 3; col++) {
                 const card = document.createElement('div');
@@ -216,10 +182,11 @@
                     let points = difficulty === 'easy' ? 2000 : difficulty === 'medium' ? 5000 : 10000;
 
                     card.className = 'card';
+                    card.dataset.id = cardId;
                     card.innerHTML = `
                         <div>
                             <h3>Zona ${row}-${col+1}</h3>
-                            <p>${levelName} - ${points} pts</p>
+                            <p>${levelName} - ${points} 💲</p>
                         </div>
                     `;
 
@@ -232,6 +199,7 @@
                         currentLevel = levelName;
                         currentPoints = points;
                         currentCardId = cardId;
+                        currentCardElement = card;
                         showRandomQuestion();
                     });
                 }
@@ -249,7 +217,7 @@
             const q = currentQuestions[randomIndex];
             
             document.getElementById('question').textContent = q.q;
-            document.getElementById('difficulty').textContent = `Nivel: ${currentLevel} — ${currentPoints} puntos`;
+            document.getElementById('difficulty').textContent = `Nivel: ${currentLevel} — ${currentPoints} 💲`;
             
             const optionsDiv = document.getElementById('options');
             optionsDiv.innerHTML = '';
@@ -268,15 +236,10 @@
         }
 
         function selectAnswer(index, element, correct) {
-            // Quitar selección anterior
             document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-            
-            // Marcar la seleccionada
             element.classList.add('selected');
             selectedAnswer = index;
             correctAnswer = correct;
-            
-            // Mostrar botones de confirmación
             document.getElementById('confirmation-buttons').style.display = 'block';
         }
 
@@ -288,28 +251,17 @@
 
             allOptions.forEach((opt, i) => {
                 opt.style.pointerEvents = 'none';
-                if (i === correctAnswer) {
-                    opt.classList.add('correct');
-                } else if (i === selectedAnswer) {
-                    opt.classList.add('wrong');
-                }
+                if (i === correctAnswer) opt.classList.add('correct');
+                else if (i === selectedAnswer) opt.classList.add('wrong');
             });
 
-            if (isCorrect) {
+            if (isCorrect && currentCardElement) {
                 totalScore += currentPoints;
                 document.getElementById('totalScore').textContent = totalScore.toLocaleString();
                 answered.add(currentCardId);
-                
-                // Marcar casilla como completada
-                const cards = document.querySelectorAll('.card');
-                cards.forEach(card => {
-                    if (card.textContent.includes(currentCardId.split('-')[0])) {
-                        card.classList.add('completed');
-                    }
-                });
+                currentCardElement.classList.add('completed');
             }
 
-            // Ocultar botones de confirmación
             document.getElementById('confirmation-buttons').style.display = 'none';
         }
 
