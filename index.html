@@ -84,213 +84,32 @@
             pointer-events: none;
         }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center; }
+        /* Modal Mejorado */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content {
-            background: linear-gradient(145deg, #1a0033, #2a0055);
+            background: linear-gradient(145deg, #2a0055, #1a0033);
             border: 3px solid #9b59b6;
             border-radius: 20px;
-            width: 90%; max-width: 700px; padding: 30px;
-            box-shadow: 0 0 40px rgba(155, 89, 182, 0.8);
+            width: 90%; max-width: 720px; padding: 35px 30px;
+            box-shadow: 0 0 50px rgba(155, 89, 182, 0.7);
+            position: relative;
         }
 
-        .modal h2 { color: #ffd700; margin-bottom: 10px; font-size: 1.8rem; }
-        .difficulty { font-size: 1.1rem; margin-bottom: 20px; color: #aaa; }
-
-        .option {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid #9b59b6;
-            margin: 12px 0;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 1.1rem;
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 2.8rem;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-        .option:hover { background: rgba(155, 89, 182, 0.3); transform: scale(1.03); }
-        .option.selected { border-color: #ffd700; background: rgba(255, 215, 0, 0.15); }
-        .option.correct { background: #00cc00; border-color: #00ff00; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>CONCURSILLO</h1>
-        <div class="score">Puntuación Total: <span id="totalScore">0</span> 💲</div>
-        <p>Elige tu zona y nivel de dificultad</p>
-        <div class="grid" id="grid"></div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">×</span>
-            <h2 id="question"></h2>
-            <p id="difficulty" class="difficulty"></p>
-            <div id="options"></div>
-            
-            <div id="confirmation-buttons" style="display: none; margin-top: 25px;">
-                <button class="btn btn-confirm" onclick="submitAnswer()">Confirmar Respuesta</button>
-                <button class="btn btn-cancel" onclick="cancelSelection()">Cancelar</button>
-            </div>
-
-            <div id="action-buttons" style="margin-top: 25px;">
-                <button class="btn btn-new" onclick="newRandomQuestion()">Nueva Pregunta</button>
-                <button class="btn" onclick="closeModal()" style="background:#555;">Cerrar</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let totalScore = 0;
-        const answered = new Set();
-
-        const categories = ["❤️Nosotros❤️", "🧁Arcane🧁", "🏳️‍🌈Heartsopped🏳️‍🌈"];
-
-        const columns = [
-            {
-                easy: [
-                    { q: "¿Cuál es nuestro nombre favorito para una niña?", a: ["A) Ignacia", "B) Dominga", "C) Antonia", "D) Isha"], c: 1 },
-                    { q: "¿Cuándo estamos de aniversario?", a: ["A) 14/Diciembre", "B) 13/Noviembre", "C) 14/Noviembre", "D) 13/Diciembre"], c: 3 },
-                    { q: "A qué concierto fuimos juntos", a: ["A) Bad Bunny", "B) Taylor Swift", "C) Big Time Rush", "D) Pailita"], c: 2 }
-                ],
-                medium: [
-                    { q: "¿Qué nombre le pondría a cualquier mascota?", a: ["A) Oliver", "B) Frank Jr", "C) Frank Segundo", "D) Alfred"], c: 3 }
-                    // Aquí puedes agregar más preguntas medias
-                ],
-                hard: [
-                    { 
-                        q: "¿Quieres mucho a tu equipo Nosotros?", 
-                        a: ["A) Sí, muchísimo", "B) Obvio que sí", "C) Con todo mi corazón", "D) Más que a nada"], 
-                        c: 0, 
-                        allCorrect: true 
-                    }
-                ]
-            },
-            { easy: [], medium: [], hard: [] },
-            { easy: [], medium: [], hard: [] }
-        ];
-
-        // ... (el resto del código es el mismo de antes)
-        let currentQuestions = [];
-        let currentLevel = '';
-        let currentPoints = 0;
-        let selectedAnswer = -1;
-        let currentCardId = null;
-        let currentCardElement = null;
-
-        const grid = document.getElementById('grid');
-
-        for (let row = 0; row < 6; row++) {
-            for (let col = 0; col < 3; col++) {
-                const card = document.createElement('div');
-                const cardId = `${row}-${col}`;
-
-                if (row === 0) {
-                    card.className = 'card header-card';
-                    card.innerHTML = `<div><h3>${categories[col]}</h3></div>`;
-                } else {
-                    let difficulty = (row <= 2) ? 'easy' : (row <= 4) ? 'medium' : 'hard';
-                    let points = difficulty === 'easy' ? 2000 : difficulty === 'medium' ? 5000 : 10000;
-
-                    card.className = 'card';
-                    card.dataset.id = cardId;
-                    card.innerHTML = `<div class="money">${points} 💲</div>`;
-
-                    card.addEventListener('click', () => {
-                        if (answered.has(cardId)) {
-                            alert("Ya respondiste esta casilla.");
-                            return;
-                        }
-                        currentQuestions = columns[col][difficulty];
-                        currentLevel = difficulty === 'easy' ? 'Fácil' : difficulty === 'medium' ? 'Medio' : 'Difícil';
-                        currentPoints = points;
-                        currentCardId = cardId;
-                        currentCardElement = card;
-                        showRandomQuestion();
-                    });
-                }
-                grid.appendChild(card);
-            }
+            color: #aaa;
         }
 
-        function showRandomQuestion() {
-            if (currentQuestions.length === 0) {
-                alert("No hay preguntas en este nivel todavía.");
-                return;
-            }
-
-            const randomIndex = Math.floor(Math.random() * currentQuestions.length);
-            const q = currentQuestions[randomIndex];
-            
-            document.getElementById('question').textContent = q.q;
-            document.getElementById('difficulty').textContent = `Nivel: ${currentLevel} — ${currentPoints} 💲`;
-            
-            const optionsDiv = document.getElementById('options');
-            optionsDiv.innerHTML = '';
-            selectedAnswer = -1;
-
-            q.a.forEach((answer, idx) => {
-                const option = document.createElement('div');
-                option.className = 'option';
-                option.textContent = answer;
-                option.onclick = () => selectAnswer(idx, option, q);
-                optionsDiv.appendChild(option);
-            });
-            
-            document.getElementById('confirmation-buttons').style.display = 'none';
-            document.getElementById('modal').style.display = 'flex';
+        .modal h2 { 
+            color: #ffd700; 
+            margin-bottom: 8px; 
+            font-size: 1.9rem; 
+            text-align: center;
         }
 
-        function selectAnswer(index, element, question) {
-            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedAnswer = index;
-            document.getElementById('confirmation-buttons').style.display = 'block';
-        }
-
-        function submitAnswer() {
-            if (selectedAnswer === -1) return;
-
-            const allOptions = document.querySelectorAll('.option');
-            const currentQuestion = currentQuestions.find(q => q.q === document.getElementById('question').textContent);
-            const isAllCorrect = currentQuestion && currentQuestion.allCorrect;
-
-            allOptions.forEach((opt, i) => {
-                opt.style.pointerEvents = 'none';
-                if (isAllCorrect || i === selectedAnswer) {
-                    opt.classList.add('correct');
-                } else if (i === selectedAnswer) {
-                    opt.classList.add('wrong');
-                }
-            });
-
-            if (currentCardElement) {
-                totalScore += currentPoints;
-                document.getElementById('totalScore').textContent = totalScore.toLocaleString();
-                answered.add(currentCardId);
-                currentCardElement.classList.add('completed');
-            }
-
-            document.getElementById('confirmation-buttons').style.display = 'none';
-        }
-
-        function cancelSelection() {
-            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-            document.getElementById('confirmation-buttons').style.display = 'none';
-            selectedAnswer = -1;
-        }
-
-        function newRandomQuestion() {
-            showRandomQuestion();
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-            cancelSelection();
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === "Escape") closeModal();
-        });
-    </script>
-</body>
-</html>
+        .difficulty { 
+            font-size: 1.2rem
