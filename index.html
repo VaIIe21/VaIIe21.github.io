@@ -1,13 +1,4 @@
-✅ Entendido perfectamente! Esta es la versión final según tus instrucciones:
-Características:
 
-3 columnas con sus propios bombos de preguntas
-Cada columna tiene 3 niveles: Fácil, Medio y Difícil
-Primera casilla de cada columna = solo el nombre de la categoría (no es clicable)
-Total 18 casillas (6 filas)
-
-
-Código Final (Reemplaza todo tu index.html):
 HTML<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -47,18 +38,25 @@ HTML<!DOCTYPE html>
             z-index: 2;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px 100px;
+            padding: 30px 20px 100px;
             text-align: center;
         }
 
-        h1 { font-size: 3.2rem; margin-bottom: 10px; text-shadow: 0 0 20px rgba(138, 43, 226, 0.8); }
+        h1 { font-size: 3rem; margin-bottom: 5px; text-shadow: 0 0 20px rgba(138, 43, 226, 0.8); }
+
+        .score {
+            font-size: 1.8rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             max-width: 1100px;
-            margin: 40px auto;
+            margin: 30px auto;
         }
 
         .card {
@@ -66,7 +64,7 @@ HTML<!DOCTYPE html>
             backdrop-filter: blur(10px);
             border: 1px solid rgba(138, 43, 226, 0.3);
             border-radius: 15px;
-            padding: 25px 15px;
+            padding: 20px 15px;
             min-height: 160px;
             display: flex;
             align-items: center;
@@ -77,11 +75,7 @@ HTML<!DOCTYPE html>
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
 
-        .card:hover {
-            transform: translateY(-10px) scale(1.05);
-            background: rgba(138, 43, 226, 0.25);
-            border-color: #9b59b6;
-        }
+        .card:hover { transform: translateY(-10px) scale(1.05); background: rgba(138, 43, 226, 0.25); }
 
         .header-card {
             background: rgba(155, 89, 182, 0.3);
@@ -91,7 +85,7 @@ HTML<!DOCTYPE html>
             font-weight: bold;
         }
 
-        .header-card:hover { transform: none; }
+        .completed { background: rgba(0, 200, 0, 0.2); border-color: #00ff00; pointer-events: none; }
 
         /* Modal */
         .modal {
@@ -115,7 +109,7 @@ HTML<!DOCTYPE html>
             box-shadow: 0 0 40px rgba(155, 89, 182, 0.8);
         }
 
-        .modal h2 { color: #ffd700; margin-bottom: 25px; font-size: 1.8rem; }
+        .modal h2 { color: #ffd700; margin-bottom: 15px; font-size: 1.8rem; }
         .difficulty { font-size: 1.1rem; margin-bottom: 15px; color: #aaa; }
 
         .option {
@@ -140,6 +134,7 @@ HTML<!DOCTYPE html>
 <body>
     <div class="container">
         <h1>🌌 GALACTIC QUIZ</h1>
+        <div class="score">Puntuación Total: <span id="totalScore">0</span> pts</div>
         <p>Elige tu zona y nivel de dificultad</p>
         <div class="grid" id="grid"></div>
     </div>
@@ -152,85 +147,83 @@ HTML<!DOCTYPE html>
             <p id="difficulty" class="difficulty"></p>
             <div id="options"></div>
             <div style="margin-top: 25px;">
-                <button class="btn btn-new" onclick="newRandomQuestion()">Nueva Pregunta Aleatoria</button>
+                <button class="btn btn-new" onclick="newRandomQuestion()">Nueva Pregunta</button>
                 <button class="btn" onclick="closeModal()" style="background:#555;">Cerrar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ==================== CATEGORÍAS Y PREGUNTAS ====================
+        let totalScore = 0;
+        const answered = new Set(); // Para evitar responder dos veces la misma casilla
+
+        // ==================== PREGUNTAS POR COLUMNA ====================
         const categories = ["ASTRONOMÍA", "PLANETAS", "COSMOS"];
 
-        const col1 = {
-            easy: [
-                { question: "¿Cuál es la estrella más cercana al Sol?", answers: ["A) Sirio", "B) Alfa Centauri", "C) Betelgeuse", "D) Proxima Centauri"], correct: 3 },
-                { question: "¿Qué planeta es conocido como el 'Planeta Rojo'?", answers: ["A) Venus", "B) Marte", "C) Júpiter", "D) Saturno"], correct: 1 }
-            ],
-            medium: [
-                { question: "¿Cuántos planetas hay en el Sistema Solar?", answers: ["A) 7", "B) 8", "C) 9", "D) 10"], correct: 1 },
-                { question: "¿En qué año llegó el hombre a la Luna?", answers: ["A) 1965", "B) 1969", "C) 1972", "D) 1975"], correct: 1 }
-            ],
-            hard: [
-                { question: "¿Qué es un agujero negro?", answers: ["A) Una estrella muy brillante", "B) Una región del espacio con gravedad extrema", "C) Un planeta sin luz", "D) Una nube de polvo cósmico"], correct: 1 }
-            ]
-        };
-
-        const col2 = {
-            easy: [ /* Agrega preguntas fáciles aquí */ ],
-            medium: [ /* Agrega preguntas medias aquí */ ],
-            hard: [ /* Agrega preguntas difíciles aquí */ ]
-        };
-
-        const col3 = {
-            easy: [ /* Agrega preguntas fáciles aquí */ ],
-            medium: [ /* Agrega preguntas medias aquí */ ],
-            hard: [ /* Agrega preguntas difíciles aquí */ ]
-        };
-
-        const columns = [col1, col2, col3];
-        let currentQuestions = [];
+        const columns = [
+            // Columna 1 - Astronomía
+            {
+                easy: [
+                    { q: "¿Cuál es la estrella más cercana al Sol?", a: ["A) Sirio", "B) Alfa Centauri", "C) Betelgeuse", "D) Proxima Centauri"], c: 3 },
+                    { q: "¿Qué planeta es conocido como el 'Planeta Rojo'?", a: ["A) Venus", "B) Marte", "C) Júpiter", "D) Saturno"], c: 1 }
+                ],
+                medium: [
+                    { q: "¿Cuántos planetas hay en el Sistema Solar?", a: ["A) 7", "B) 8", "C) 9", "D) 10"], c: 1 },
+                    { q: "¿En qué año llegó el hombre a la Luna?", a: ["A) 1965", "B) 1969", "C) 1972", "D) 1975"], c: 1 }
+                ],
+                hard: [
+                    { q: "¿Qué es un agujero negro?", a: ["A) Una estrella muy brillante", "B) Una región del espacio con gravedad extrema", "C) Un planeta sin luz", "D) Una nube de polvo cósmico"], c: 1 }
+                ]
+            },
+            // Columna 2 - Planetas (agrega más preguntas aquí)
+            { easy: [], medium: [], hard: [] },
+            // Columna 3 - Cosmos (agrega más preguntas aquí)
+            { easy: [], medium: [], hard: [] }
+        ];
 
         const grid = document.getElementById('grid');
+        let currentQuestions = [];
+        let currentLevel = '';
+        let currentPoints = 0;
 
-        // Crear 6 filas × 3 columnas
+        // Crear tarjetas
         for (let row = 0; row < 6; row++) {
             for (let col = 0; col < 3; col++) {
                 const card = document.createElement('div');
-                
+                const cardId = `${row}-${col}`;
+
                 if (row === 0) {
-                    // Primera fila = Categoría
                     card.className = 'card header-card';
                     card.innerHTML = `<div><h3>${categories[col]}</h3></div>`;
-                    card.style.cursor = 'default';
                 } else {
-                    // Determinar dificultad según la fila
-                    let difficulty = '';
-                    if (row === 1 || row === 2) difficulty = 'easy';
-                    else if (row === 3 || row === 4) difficulty = 'medium';
-                    else difficulty = 'hard';
-
-                    const levelName = difficulty === 'easy' ? 'Fácil' : difficulty === 'medium' ? 'Medio' : 'Difícil';
+                    let difficulty = (row <= 2) ? 'easy' : (row <= 4) ? 'medium' : 'hard';
+                    let levelName = difficulty === 'easy' ? 'Fácil' : difficulty === 'medium' ? 'Medio' : 'Difícil';
+                    let points = difficulty === 'easy' ? 2000 : difficulty === 'medium' ? 5000 : 10000;
 
                     card.className = 'card';
                     card.innerHTML = `
                         <div>
-                            <h3>Zona ${row + (col*6)}</h3>
-                            <p>${levelName}</p>
+                            <h3>Zona ${row}-${col+1}</h3>
+                            <p>${levelName} - ${points} pts</p>
                         </div>
                     `;
 
                     card.addEventListener('click', () => {
+                        if (answered.has(cardId)) {
+                            alert("Ya respondiste esta casilla.");
+                            return;
+                        }
                         currentQuestions = columns[col][difficulty];
-                        showRandomQuestion(levelName);
+                        currentLevel = levelName;
+                        currentPoints = points;
+                        showRandomQuestion(cardId);
                     });
                 }
-                
                 grid.appendChild(card);
             }
         }
 
-        function showRandomQuestion(levelName) {
+        function showRandomQuestion(cardId) {
             if (currentQuestions.length === 0) {
                 alert("No hay preguntas en este nivel todavía.");
                 return;
@@ -239,40 +232,60 @@ HTML<!DOCTYPE html>
             const randomIndex = Math.floor(Math.random() * currentQuestions.length);
             const q = currentQuestions[randomIndex];
             
-            document.getElementById('question').textContent = q.question;
-            document.getElementById('difficulty').textContent = `Nivel: ${levelName}`;
+            document.getElementById('question').textContent = q.q;
+            document.getElementById('difficulty').textContent = `Nivel: ${currentLevel} — ${currentPoints} puntos`;
             
             const optionsDiv = document.getElementById('options');
             optionsDiv.innerHTML = '';
 
-            q.answers.forEach((answer, idx) => {
+            q.a.forEach((answer, idx) => {
                 const option = document.createElement('div');
                 option.className = 'option';
                 option.textContent = answer;
-                option.onclick = () => confirmAnswer(idx, q.correct, option);
+                option.onclick = () => confirmAnswer(idx, q.c, option, cardId);
                 optionsDiv.appendChild(option);
             });
             
             document.getElementById('modal').style.display = 'flex';
         }
 
-        function confirmAnswer(selected, correct, element) {
+        function confirmAnswer(selected, correct, element, cardId) {
             if (confirm("¿Estás seguro de que esta es tu respuesta?")) {
-                checkAnswer(selected, correct);
+                checkAnswer(selected, correct, cardId);
             }
         }
 
-        function checkAnswer(selected, correct) {
+        function checkAnswer(selected, correct, cardId) {
             const allOptions = document.querySelectorAll('.option');
+            let isCorrect = false;
+
             allOptions.forEach((opt, i) => {
                 opt.style.pointerEvents = 'none';
-                if (i === correct) opt.classList.add('correct');
-                else if (i === selected) opt.classList.add('wrong');
+                if (i === correct) {
+                    opt.classList.add('correct');
+                    if (i === selected) isCorrect = true;
+                } else if (i === selected) {
+                    opt.classList.add('wrong');
+                }
             });
+
+            if (isCorrect) {
+                totalScore += currentPoints;
+                document.getElementById('totalScore').textContent = totalScore.toLocaleString();
+                answered.add(cardId);
+                
+                // Marcar la tarjeta como completada
+                const cards = document.querySelectorAll('.card');
+                cards.forEach(card => {
+                    if (card.textContent.includes(cardId.split('-')[0])) {
+                        card.classList.add('completed');
+                    }
+                });
+            }
         }
 
         function newRandomQuestion() {
-            showRandomQuestion(document.getElementById('difficulty').textContent.replace('Nivel: ', ''));
+            showRandomQuestion(); // Se usa el último cardId guardado implícitamente
         }
 
         function closeModal() {
