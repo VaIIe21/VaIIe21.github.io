@@ -71,6 +71,13 @@
             font-weight: bold;
         }
 
+        .money {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
         .completed { 
             background: rgba(0, 200, 0, 0.25) !important; 
             border-color: #00ff00 !important; 
@@ -140,19 +147,21 @@
 
         const columns = [
             {
-                easy: [{q: "¿Cuál es nuestro nombre favorito para una niña? ", a: ["A) Ignacia", "B) Dominga", "C) Antonia", "D) Isha"], c: 1 },
-                       {q:"¿Cuándo estamos de aniversario ? ",a:["A) 14/Diciembre","B)13/Noviembre","C)14/Noviembre","D)13/Diciembre"],c:3},
-                       {q:"A que concierto fuimos juntos  ",a:["A) Bad Bunny","B)Taylor Swift","C)Big Time Rush","D)Pailita"],c:2}
-                      ],
-                medium: [{q:"¿Que nombre le pondría a cualquier mascota? ",a:["A)Oliver","B)Frank Jr","C)Frank Segundo","D)Alfred"],c:3}
-                        
-                        ],
+                easy: [
+                    { q: "¿Cuál es nuestro nombre favorito para una niña?", a: ["A) Ignacia", "B) Dominga", "C) Antonia", "D) Isha"], c: 1 },
+                    { q: "¿Cuándo estamos de aniversario?", a: ["A) 14/Diciembre", "B) 13/Noviembre", "C) 14/Noviembre", "D) 13/Diciembre"], c: 3 },
+                    { q: "A qué concierto fuimos juntos", a: ["A) Bad Bunny", "B) Taylor Swift", "C) Big Time Rush", "D) Pailita"], c: 2 }
+                ],
+                medium: [
+                    { q: "¿Qué nombre le pondría a cualquier mascota?", a: ["A) Oliver", "B) Frank Jr", "C) Frank Segundo", "D) Alfred"], c: 3 }
+                    // Aquí puedes agregar más preguntas medias
+                ],
                 hard: [
                     { 
                         q: "¿Quieres mucho a tu equipo Nosotros?", 
                         a: ["A) Sí, muchísimo", "B) Obvio que sí", "C) Con todo mi corazón", "D) Más que a nada"], 
                         c: 0, 
-                        allCorrect: true   // ← Esta es la pregunta especial
+                        allCorrect: true 
                     }
                 ]
             },
@@ -160,6 +169,7 @@
             { easy: [], medium: [], hard: [] }
         ];
 
+        // ... (el resto del código es el mismo de antes)
         let currentQuestions = [];
         let currentLevel = '';
         let currentPoints = 0;
@@ -179,17 +189,11 @@
                     card.innerHTML = `<div><h3>${categories[col]}</h3></div>`;
                 } else {
                     let difficulty = (row <= 2) ? 'easy' : (row <= 4) ? 'medium' : 'hard';
-                    let levelName = difficulty === 'easy' ? 'Fácil' : difficulty === 'medium' ? 'Medio' : 'Difícil';
                     let points = difficulty === 'easy' ? 2000 : difficulty === 'medium' ? 5000 : 10000;
 
                     card.className = 'card';
                     card.dataset.id = cardId;
-                    card.innerHTML = `
-                        <div>
-                            <h3>Zona ${row}-${col+1}</h3>
-                            <p>${levelName} - ${points} 💲</p>
-                        </div>
-                    `;
+                    card.innerHTML = `<div class="money">${points} 💲</div>`;
 
                     card.addEventListener('click', () => {
                         if (answered.has(cardId)) {
@@ -197,7 +201,7 @@
                             return;
                         }
                         currentQuestions = columns[col][difficulty];
-                        currentLevel = levelName;
+                        currentLevel = difficulty === 'easy' ? 'Fácil' : difficulty === 'medium' ? 'Medio' : 'Difícil';
                         currentPoints = points;
                         currentCardId = cardId;
                         currentCardElement = card;
@@ -254,10 +258,11 @@
                 opt.style.pointerEvents = 'none';
                 if (isAllCorrect || i === selectedAnswer) {
                     opt.classList.add('correct');
+                } else if (i === selectedAnswer) {
+                    opt.classList.add('wrong');
                 }
             });
 
-            // Siempre suma puntos si es la pregunta especial
             if (currentCardElement) {
                 totalScore += currentPoints;
                 document.getElementById('totalScore').textContent = totalScore.toLocaleString();
